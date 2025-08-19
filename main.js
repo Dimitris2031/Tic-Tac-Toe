@@ -1,58 +1,52 @@
-function getComputerChoice(){
-    let item;
-    let randomInt = Math.floor(Math.random() * 3) + 1;
-    if (randomInt== 1){
-        item = "paper";
-    } else if(randomInt == 2){
-        item = "rock";
-    }else{
-        item = "scissors";
-    }
-    return item;
-}
+function playerFactory(name,marker,score){
+    return{
+        name: name,
+        marker: marker,
+        score: score
 
-function playRound(compChoice,PlayerChoice){
-    
-    if (compChoice==PlayerChoice){
-        console.log("TIE!");
-        return 0;
-    }
-
-    if (compChoice == "paper" && PlayerChoice == "rock" ||
-        compChoice == "rock" && PlayerChoice == "scissors" ||
-        compChoice == "scissors" && PlayerChoice == "paper") {
-        console.log(`You Lose! ${compChoice} beats ${PlayerChoice}`);
-        return 1;
-    } else {
-        console.log(`You Win! ${PlayerChoice} beats ${compChoice}`);
-        return 2;
     }
 }
 
 
-function game(){
-    let compScore = 0;
-    let playerScore = 0;
+const GameboardModule = (() =>{
+    const playerBoard = Array(9).fill(null);
+    function updateBoard(cellPosition){
+        cellPosition.split('cell','')
 
-    while (compScore < 5 && playerScore < 5) {
-        const playerSelection = prompt("choose your weapon: ");
-        computerSelection = getComputerChoice(); 
-        const rounds = playRound(computerSelection,playerSelection)
-      
-        if (rounds == 1) {
-          compScore++;
-        } else if (rounds == 2) {
-          playerScore++;
-        }
-      }
-    alert(compScore);
-    alert(playerScore);
-    if (compScore > playerScore) {
-    return("The Computer Won!");
-    } else {
-    return("You won!");
     }
-}
+    return{
+        updateBoard
+    }
+})();
 
+const GameController = (() => {
+    let currIndex = 1;  
+    const player1 = playerFactory("player1","X",0);
+    const player2 = playerFactory("player2","0",0);
+    const players = [player1,player2];
 
-console.log(game());
+    function checkPlayerTurn() {
+    currIndex = 1 - currIndex;
+    console.log(players[currIndex]);
+    return players[currIndex];
+    }
+    function updateBoard(cellPosition){
+        let whichPLayer = players[currIndex];
+        document.getElementById(cellPosition).textContent = whichPLayer.marker;
+    }
+    return {
+    checkPlayerTurn,
+    updateBoard
+    };
+})();
+
+const divs = document.querySelectorAll("div");
+
+divs.forEach((div,index) => {   
+    div.id = `cell${index}`;
+  div.addEventListener("click", () => {
+    console.log(playerBoard);
+    GameController.checkPlayerTurn();
+    GameController.updateBoard(div.id);
+  });
+});
