@@ -25,3 +25,8 @@ div{
     align-items: center;
     justify-content: center;
 }
+
+.scoreboard{
+    position: absolute;
+    top: 20%;
+}
